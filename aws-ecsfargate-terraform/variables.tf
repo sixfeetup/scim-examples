@@ -9,6 +9,11 @@ variable "domain_name" {
   description = ""
 }
 
+variable "scimsession" {
+  type        = string
+  description = ""
+}
+
 variable "route53_zone_id" {
   type        = string
   description = ""

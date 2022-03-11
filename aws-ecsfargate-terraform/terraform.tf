@@ -9,10 +9,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.aws_region
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -27,7 +23,7 @@ resource "aws_secretsmanager_secret" "scimsession" {
 
 resource "aws_secretsmanager_secret_version" "scimsession_1" {
   secret_id     = aws_secretsmanager_secret.scimsession.id
-  secret_string = base64encode(file("${path.module}/scimsession"))
+  secret_string = base64encode(file(var.scimsession))
 }
 
 resource "aws_cloudwatch_log_group" "scim-bridge" {
@@ -40,7 +36,7 @@ resource "aws_ecs_cluster" "scim-bridge" {
 
 resource "aws_ecs_task_definition" "scim-bridge" {
   family = "scim-bridge"
-  container_definitions = templatefile("task-definitions/scim.json",
+  container_definitions = templatefile("${path.module}/task-definitions/scim.json",
     { secret_arn     = aws_secretsmanager_secret.scimsession.arn,
       aws_logs_group = aws_cloudwatch_log_group.scim-bridge.name,
       region         = var.aws_region

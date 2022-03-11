@@ -19,3 +19,8 @@ variable "scim_image" {
   description = ""
   default     = "1password/scim:v2.3.1"
 }
+
+variable "scimsession" {
+  type        = string
+  description = ""
+}

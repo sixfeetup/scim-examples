@@ -13,3 +13,9 @@ variable "route53_zone_id" {
   type        = string
   description = ""
 }
+
+variable "scim_image" {
+  type        = string
+  description = ""
+  default     = "1password/scim:v2.3.1"
+}

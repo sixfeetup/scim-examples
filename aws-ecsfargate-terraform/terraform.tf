@@ -44,6 +44,7 @@ resource "aws_ecs_task_definition" "scim-bridge" {
     { secret_arn     = aws_secretsmanager_secret.scimsession.arn,
       aws_logs_group = aws_cloudwatch_log_group.scim-bridge.name,
       region         = var.aws_region
+      scim_image     = var.scim_image
   })
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
@@ -178,7 +179,7 @@ resource "aws_lb_listener" "listener_https" {
   port              = 443
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate_validation.scim_bridge_cert_validate.certificate_arn
-   /* Use the following line instead of the previous line if you're not using Route53
+  /* Use the following line instead of the previous line if you're not using Route53
   certificate_arn         = aws_acm_certificate.scim_bridge_cert.arn 
    */
   default_action {
@@ -209,7 +210,7 @@ resource "aws_acm_certificate" "scim_bridge_cert" {
 /* If you are not using AWS Route 53 and AWS Certificate Manager for your DNS, 
    comment out below here */
 
-resource "aws_acm_certificate_validation" "scim_bridge_cert_validate" { 
+resource "aws_acm_certificate_validation" "scim_bridge_cert_validate" {
   certificate_arn         = aws_acm_certificate.scim_bridge_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.scim_bridge_cert_validation : record.fqdn]
 }
